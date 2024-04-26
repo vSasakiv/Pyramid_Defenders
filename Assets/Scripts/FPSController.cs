@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,6 +18,8 @@ public class FPSController : MonoBehaviour
     public float lookXLimit = 45f;
     public float jumpBufferDuration = 0.1f;
     public float jumpEndEarlyModifier = 2f;
+    public float slideSpeed = 5f;
+    public bool jumpOnSlope = false;
 
     private Vector3 _moveSpeed = Vector3.zero;
     private float _rotationX;
@@ -24,14 +27,13 @@ public class FPSController : MonoBehaviour
     private float _jumpBufferCounter;
     private bool _jumpScheduled;
     private bool _isJumping;
-    private float _moveSpeedY = 0;
+    private float _moveSpeedY;
 
     private CharacterController _characterController;
 
     // Start is called before the first frame update
     private void Start()
     {
-        
         _characterController = GetComponent<CharacterController>();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -42,8 +44,8 @@ public class FPSController : MonoBehaviour
     {
         _HandlePlaneMovement();
         _HandleJump();
+        _HandleSlopeSliding();
         _HandleCamera();
-        // Debug.Log(_moveSpeed);
         _characterController.Move(_moveSpeed * Time.deltaTime);
     }
 
@@ -89,11 +91,7 @@ public class FPSController : MonoBehaviour
     {
         // If jump button is pressed, schedule a jump to happen and zero the counter
         bool jumpPressed = Input.GetButton("Jump");
-        if (jumpPressed)
-        {
-            _jumpScheduled = true;
-            _jumpBufferCounter = 0f;
-        }
+        // bool isGrounded = _isGrounded();
 
         // If the time passes and we still cannot jump, de-schedule the jump
         if (_jumpScheduled)
@@ -104,7 +102,7 @@ public class FPSController : MonoBehaviour
         }
 
         // If there's a scheduled jump and the character is grounded, jump
-        if (_jumpScheduled && _characterController.isGrounded)
+        if (_jumpScheduled && _characterController.isGrounded && !_isJumping)
         {
             _moveSpeed.y = jumpPower;
             _isJumping = true;
@@ -114,24 +112,24 @@ public class FPSController : MonoBehaviour
         {
             _moveSpeed.y = _moveSpeedY;
         }
+        
+        if (jumpPressed)
+        {
+            _jumpScheduled = true;
+            _jumpBufferCounter = 0f;
+        }
 
         float currentFallSpeed = fallSpeed;
 
-        if (!_characterController.isGrounded)
-        {
-            // If it is still jumping, but the button is released
-            if (_isJumping && !jumpPressed && _moveSpeed.y > 0)
-                currentFallSpeed *= jumpEndEarlyModifier;
+        // If it is still jumping, but the button is released
+        if (_isJumping && !jumpPressed && _moveSpeed.y > 0)
+            currentFallSpeed *= jumpEndEarlyModifier;
 
-            _moveSpeed.y -= currentFallSpeed * Time.deltaTime;
-        }
-        else
-        {
-            if (!(_moveSpeed.y > 0))
-                _isJumping = false;
-            if (!_isJumping)
-                _moveSpeed.y = 0f;
-        }
+        _moveSpeed.y -= currentFallSpeed * Time.deltaTime;
+
+        if (!_characterController.isGrounded) return;
+        if (!(_moveSpeed.y > 0))
+            _isJumping = false;
     }
 
     private void _HandleCamera()
@@ -142,4 +140,35 @@ public class FPSController : MonoBehaviour
         transform.rotation *= Quaternion.Euler(0, Input.GetAxis("Mouse X") * lookSpeed, 0);
     }
 
+    private void _HandleSlopeSliding()
+    {
+        float sphereCastVerticalOffset = _characterController.height / 2 - _characterController.radius;
+        Vector3 castOrigin = transform.position - new Vector3(0, sphereCastVerticalOffset, 0);
+
+        if (!_characterController.isGrounded) return;
+        
+        // ray casts a sphere below the player, if it hits something, get the angle between the
+        // normal of the surface it hit and the Y-axis, and apply a speed to simulate sliding
+        if (!Physics.SphereCast(castOrigin,
+                _characterController.radius - 0.01f,
+                Vector3.down,
+                out var hitInfo,
+                1f,
+                ~LayerMask.GetMask("Player"),
+                QueryTriggerInteraction.Ignore))
+            return;
+
+        Vector3 normal = hitInfo.normal;
+        float angle = Vector3.Angle(Vector3.up, normal);
+
+        if (!(angle > _characterController.slopeLimit)) return;
+
+        float yInverse = 1f - normal.y;
+        _moveSpeed.x += yInverse * normal.x * slideSpeed;
+        _moveSpeed.z += yInverse * normal.z * slideSpeed;
+
+        if (jumpOnSlope) return;
+
+        _jumpScheduled = false;
+    }
 }
