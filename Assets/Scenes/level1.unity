@@ -1463,7 +1463,7 @@ MonoBehaviour:
     EnableNetworkLogs: 1
     OldPrefabList: []
   RunInBackground: 1
-  LogLevel: 1
+  LogLevel: 0
 --- !u!114 &1773294491
 MonoBehaviour:
   m_ObjectHideFlags: 0
