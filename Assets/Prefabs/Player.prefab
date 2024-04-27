@@ -228,6 +228,7 @@ GameObject:
   - component: {fileID: 2641988215813519455}
   - component: {fileID: 6517879762721471028}
   - component: {fileID: 2141195532980806737}
+  - component: {fileID: 2821083487592860472}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -355,6 +356,20 @@ MonoBehaviour:
   InLocalSpace: 0
   Interpolate: 1
   SlerpPosition: 0
+--- !u!114 &2821083487592860472
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7698878085638543507}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 533f34840e29c8b4a918e77ffd14cab0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerCamera: {fileID: 3795112978714766378}
+  playerAudioListener: {fileID: 2388894657427148247}
 --- !u!1 &7765429864613595403
 GameObject:
   m_ObjectHideFlags: 0
@@ -396,7 +411,7 @@ Camera:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7765429864613595403}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_ClearFlags: 1
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
@@ -447,7 +462,7 @@ AudioListener:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7765429864613595403}
-  m_Enabled: 1
+  m_Enabled: 0
 --- !u!114 &6239442139500294293
 MonoBehaviour:
   m_ObjectHideFlags: 0
