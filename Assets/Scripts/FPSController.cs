@@ -1,26 +1,27 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
-public class FPSController : MonoBehaviour
+public class FPSController : NetworkBehaviour
 {
-    public Camera playerCamera;
-    public float acceleration = 30f;
-    public float midAirAcceleration = 1f;
+    [SerializeField] private Camera playerCamera;
+    [SerializeField] private float acceleration = 30f;
+    [SerializeField] private float midAirAcceleration = 1f;
 
-    public float walkSpeed = 6f;
-    public float runSpeed = 12f;
-    public float jumpPower = 7f;
-    public float fallSpeed = 10f;
-    public float lookSpeed = 2f;
-    public float lookXLimit = 45f;
-    public float jumpBufferDuration = 0.1f;
-    public float jumpEndEarlyModifier = 2f;
-    public float slideSpeed = 5f;
-    public bool jumpOnSlope = false;
-
+    [SerializeField] private float walkSpeed = 6f;
+    [SerializeField] private float runSpeed = 12f;
+    [SerializeField] private float jumpPower = 7f;
+    [SerializeField] private float fallSpeed = 10f;
+    [SerializeField] private float lookSpeed = 2f;
+    [SerializeField] private float lookXLimit = 45f;
+    [SerializeField] private float jumpBufferDuration = 0.1f;
+    [SerializeField] private float jumpEndEarlyModifier = 4f;
+    [SerializeField] private float slideSpeed = 5f;
+    [SerializeField] private bool jumpOnSlope = false;
+    
     private Vector3 _moveSpeed = Vector3.zero;
     private float _rotationX;
     private Vector3 _currentSpeed = Vector3.zero;
@@ -42,6 +43,8 @@ public class FPSController : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
+        if (!IsOwner) return;
+        
         _HandlePlaneMovement();
         _HandleJump();
         _HandleSlopeSliding();
