@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -541,7 +541,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 51895a6845bb4314fb5abc50c6140e30,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 60.2
+      value: 117
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 51895a6845bb4314fb5abc50c6140e30,
         type: 3}
@@ -551,7 +551,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 51895a6845bb4314fb5abc50c6140e30,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 58.9
+      value: -258
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 51895a6845bb4314fb5abc50c6140e30,
         type: 3}
@@ -592,7 +592,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: dd62db0201f6bdd488315655ee68ccd2, type: 2}
+      objectReference: {fileID: 2100000, guid: c10acd2ec834ef04dacb50be23f0cf6d, type: 2}
     - target: {fileID: 919132149155446097, guid: 51895a6845bb4314fb5abc50c6140e30,
         type: 3}
       propertyPath: m_Name
@@ -782,9 +782,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyPrefab: {fileID: 6494511680737754699, guid: 1adcc194ae6aa8344b90ca3294a8f8ec,
     type: 3}
+  enemySpawnRadius: 30
   enemySpawnTime:
     m_InternalValue: 5
-  enemySpawnRadius: 30
 --- !u!4 &1369856922
 Transform:
   m_ObjectHideFlags: 0
@@ -1230,7 +1230,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 13e6fd6de7891ad428e5279db83275c9, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1450,7 +1450,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: c96cf8c368071d14ab58a3e07f225061, type: 2}
+      objectReference: {fileID: 2100000, guid: 1944519eeaa842440a54279cdd8c0c78, type: 2}
     - target: {fileID: 919132149155446097, guid: 917fa80be0702294d806c5935c22c68c,
         type: 3}
       propertyPath: m_Name

@@ -6,15 +6,14 @@ using UnityEngine;
 public class EnemySpawner : NetworkBehaviour
 {
     [SerializeField] private GameObject enemyPrefab;
-    
+    [SerializeField] private float enemySpawnRadius = 30f;
     [SerializeField]
     private NetworkVariable<float> enemySpawnTime =
         new NetworkVariable<float>(5f, NetworkVariableReadPermission.Everyone);
-
-    [SerializeField] private float enemySpawnRadius = 30f;
     
+   
     private float currentEnemySpawnTime = 0f;
-    
+
     
     // Update is called once per frame
     void Update()
