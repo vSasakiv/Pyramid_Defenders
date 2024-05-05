@@ -1,95 +1,97 @@
+using Interfaces;
 using Unity.Netcode;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
-public class WanderingStrategy : BaseStrategy, IEnemyStrategy
+namespace Enemies.EnemyStrategies
 {
-    // Enemy Strategy. Wanders around spawn position
-    enum WanderingState
+    public class WanderingStrategy : NetworkBehaviour, IEnemyStrategy
     {
-        wandering,
-        waiting
-    }
-    
-    [SerializeField]
-    private NetworkVariable<float> wanderingDelay =
-        new NetworkVariable<float>(4f, NetworkVariableReadPermission.Everyone);
-    [SerializeField] private float wanderRadius = 12f;
-    [SerializeField] private float wanderSpeed = 3f;
-    [SerializeField] private float stoppingDistance = 0.3f;
-    
-    private WanderingState currentState = WanderingState.waiting;
-    private float currentWanderDelay = 2f;
-    private Vector3 spawnPosition;
-    private Vector3 targetPosition;
-    
-
-    private void Awake()
-    {
-        spawnPosition = transform.position;
-    }
-    
-    public override void UpdateStrategy()
-    {
-        if (!IsServer) return;
-        
-        switch (currentState)
+        // Enemy Strategy. Wanders around spawn position
+        private enum WanderingState
         {
+            Wandering,
+            Waiting
+        }
+    
+        [SerializeField]
+        private NetworkVariable<float> wanderingDelay =
+            new NetworkVariable<float>(4f, NetworkVariableReadPermission.Everyone);
+        [SerializeField] private float wanderRadius = 12f;
+        [SerializeField] private float wanderSpeed = 3f;
+        [SerializeField] private float stoppingDistance = 0.3f;
+    
+        private WanderingState _currentState = WanderingState.Waiting;
+        private float _currentWanderDelay = 2f;
+        private Vector3 _spawnPosition;
+        private Vector3 _targetPosition;
+    
+        private void Awake()
+        {
+            _spawnPosition = transform.position;
+        }
+    
+        public void UpdateStrategy()
+        {
+            if (!IsServer) return;
+        
+            switch (_currentState)
+            {
 
-            case WanderingState.waiting:
-                UpdateWaiting();
-                break;
-            case WanderingState.wandering:
-                UpdateWandering();
-                break;
+                case WanderingState.Waiting:
+                    UpdateWaiting();
+                    break;
+                case WanderingState.Wandering:
+                    UpdateWandering();
+                    break;
             
+            }
         }
-    }
 
 
-    void UpdateWaiting()
-    {
-        // Waits before deciding where to go next
-        currentWanderDelay += Time.deltaTime;
-
-        if (currentWanderDelay >= wanderingDelay.Value)
+        void UpdateWaiting()
         {
-            DecideNextTargetPosition();
-            currentState = WanderingState.wandering;
-            currentWanderDelay = 0f;
-        }
-    }
-    
-    void DecideNextTargetPosition()
-    {
-        targetPosition = GetRandomPositionWithinRadius(spawnPosition, wanderRadius);
-    }
+            // Waits before deciding where to go next
+            _currentWanderDelay += Time.deltaTime;
 
-    void UpdateWandering()
-    {
-        if ((transform.position - targetPosition).magnitude < stoppingDistance)
+            if (_currentWanderDelay >= wanderingDelay.Value)
+            {
+                DecideNextTargetPosition();
+                _currentState = WanderingState.Wandering;
+                _currentWanderDelay = 0f;
+            }
+        }
+    
+        void DecideNextTargetPosition()
         {
-            // If close enough to the target, starts waiting
-            currentState = WanderingState.waiting;
-            return;
+            _targetPosition = GetRandomPositionWithinRadius(_spawnPosition, wanderRadius);
         }
-        
-        // Else, moves!
-        Move();
-    }
 
-    void Move()
-    {
-        Vector3 movementVector = (transform.position - targetPosition).normalized  * (wanderSpeed * Time.deltaTime);
-        transform.Translate(movementVector);
-    }
-
-    Vector3 GetRandomPositionWithinRadius(Vector3 startingPoint, float radius)
-    {
-        Vector2 randomOffset = Random.insideUnitCircle;
-        Vector3 randomPosition =  new Vector3(randomOffset.x * radius, 0f, randomOffset.y * radius);
+        private void UpdateWandering()
+        {
+            if ((transform.position - _targetPosition).magnitude < stoppingDistance)
+            {
+                // If close enough to the target, starts waiting
+                _currentState = WanderingState.Waiting;
+                return;
+            }
         
-        return startingPoint + randomPosition;
+            // Else, moves!
+            Move();
+        }
+
+        private void Move()
+        {
+            Vector3 movementVector = (transform.position - _targetPosition).normalized  * (wanderSpeed * Time.deltaTime);
+            transform.Translate(movementVector);
+        }
+
+        private Vector3 GetRandomPositionWithinRadius(Vector3 startingPoint, float radius)
+        {
+            Vector2 randomOffset = Random.insideUnitCircle;
+            Vector3 randomPosition =  new Vector3(randomOffset.x * radius, 0f, randomOffset.y * radius);
+        
+            return startingPoint + randomPosition;
+        }
     }
-    
-    
 }

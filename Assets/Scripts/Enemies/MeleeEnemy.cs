@@ -1,39 +1,55 @@
 using System;
+using Enemies.EnemyStrategies;
+using Interfaces;
+using ScriptableObjects;
+using Unity.Netcode;
 using UnityEngine;
 
-public class MeleeEnemy : BaseEnemyBehaviour, IDamageable
+namespace Enemies
 {
-    [SerializeField] private float healthPoints = 8;
-    private WanderingStrategy enemyStrategy;
-    
-    public float Health
+    public class MeleeEnemy : NetworkBehaviour, IDamageable
     {
-        get
-        {
-            return healthPoints;
-        }
+        [SerializeField] private EnemyScriptableObject enemyStats;
         
-        set
+        private IEnemyStrategy _enemyStrategy;
+        private float _currentHealth;
+
+        public float GetHealth()
         {
-            healthPoints = value;
+            return _currentHealth;
         }
-    }
 
-    public bool TakeDamage(float damageAmount)
-    {
-        healthPoints -= damageAmount;
-        return healthPoints <= 0;
-    }
+        public bool TakeDamage(float damageAmount)
+        {
+            _currentHealth -= damageAmount;
+            return _currentHealth <= 0;
+        }
 
-    public void Awake()
-    {
-        enemyStrategy = gameObject.AddComponent<WanderingStrategy>();
-    }
+        public void Awake()
+        {
+            switch (enemyStats.strategy)
+            {
+                case Strategy.Wandering:
+                    _enemyStrategy = gameObject.AddComponent<WanderingStrategy>();
+                    break;
+                case Strategy.Attacking:
+                    break;
+                case Strategy.Defending:
+                    break;
+                case Strategy.Ranged:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
 
-    // Update is called once per frame
-    void Update()
-    {
-        if (!IsServer) return;
-        enemyStrategy.UpdateStrategy();
+            _currentHealth = enemyStats.baseHealth;
+        }
+
+        // Update is called once per frame
+        private void Update()
+        {
+            if (!IsServer) return;
+            _enemyStrategy.UpdateStrategy();
+        }
     }
 }

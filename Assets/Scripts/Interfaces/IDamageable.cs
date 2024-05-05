@@ -1,5 +1,8 @@
-public interface IDamageable
+namespace Interfaces
 {
-    public float Health { get; set; }
-    public bool TakeDamage(float damageAmount);
+    public interface IDamageable
+    {
+        public float GetHealth();
+        public bool TakeDamage(float damageAmount);
+    }
 }

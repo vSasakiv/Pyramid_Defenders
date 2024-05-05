@@ -120,7 +120,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 4265739295
+  GlobalObjectIdHash: 3840620531
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -141,7 +141,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47b0bf6deabbcec48ba89577af60f262, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  healthPoints: 8
+  enemyStats: {fileID: 11400000, guid: 92022b5bb41ce1041a6ff437e899d8e9, type: 2}
 --- !u!114 &2105962210069633528
 MonoBehaviour:
   m_ObjectHideFlags: 0

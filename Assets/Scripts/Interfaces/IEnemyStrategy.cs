@@ -1,4 +1,7 @@
-public interface IEnemyStrategy
+namespace Interfaces
 {
-    public void UpdateStrategy();
+    public interface IEnemyStrategy
+    {
+        public void UpdateStrategy();
+    }
 }

@@ -1,54 +1,54 @@
-using System.Collections;
-using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
-public class EnemySpawner : NetworkBehaviour
+namespace Enemies
 {
-    [SerializeField] private GameObject enemyPrefab;
-    [SerializeField] private float enemySpawnRadius = 30f;
-    [SerializeField]
-    private NetworkVariable<float> enemySpawnTime =
-        new NetworkVariable<float>(5f, NetworkVariableReadPermission.Everyone);
+    public class EnemySpawner : NetworkBehaviour
+    {
+        [SerializeField] private GameObject enemyPrefab;
+        [SerializeField] private float enemySpawnRadius = 30f;
+        [SerializeField]
+        private NetworkVariable<float> enemySpawnTime =
+            new NetworkVariable<float>(5f, NetworkVariableReadPermission.Everyone);
     
    
-    private float currentEnemySpawnTime = 0f;
+        private float _currentEnemySpawnTime = 0f;
 
     
-    // Update is called once per frame
-    void Update()
-    {
-        // Logic only executes on server
-        if (!IsServer) return;
-        UpdateEnemySpawning();
-    }
-
-    void UpdateEnemySpawning()
-    {
-        currentEnemySpawnTime += Time.deltaTime;
-
-        if (currentEnemySpawnTime >= enemySpawnTime.Value)
+        // Update is called once per frame
+        private void Update()
         {
-            Vector3 newEnemyPos = GetRandomEnemySpawnPosition();
-            SpawnEnemy(enemyPrefab, newEnemyPos); // No futuro o prefab pode ser variado
-            Debug.Log("Spawning enemy with position: " + newEnemyPos.ToString());
-            currentEnemySpawnTime = 0f;
+            // Logic only executes on server
+            if (!IsServer) return;
+            UpdateEnemySpawning();
         }
-    }
 
-    Vector3 GetRandomEnemySpawnPosition()
-    {
-        return  new Vector3(
-            Random.Range(-enemySpawnRadius, enemySpawnRadius),
-            1f,
-            Random.Range(-enemySpawnRadius, enemySpawnRadius)
-        );
-    }
+        private void UpdateEnemySpawning()
+        {
+            _currentEnemySpawnTime += Time.deltaTime;
 
-    void SpawnEnemy(GameObject enemyPrefabToSpawn, Vector3 spawnPosition)
-    {
-        var instance = Instantiate(enemyPrefabToSpawn, spawnPosition, Quaternion.identity);
-        var instanceNetworkObject = instance.GetComponent<NetworkObject>();
-        instanceNetworkObject.Spawn();
+            if (!(_currentEnemySpawnTime >= enemySpawnTime.Value)) return;
+            
+            Vector3 newEnemyPos = GetRandomEnemySpawnPosition();
+            _SpawnEnemy(enemyPrefab, newEnemyPos); // No futuro o prefab pode ser variado
+            // Debug.Log("Spawning enemy with position: " + newEnemyPos.ToString());
+            _currentEnemySpawnTime = 0f;
+        }
+
+        private Vector3 GetRandomEnemySpawnPosition()
+        {
+            return  new Vector3(
+                Random.Range(-enemySpawnRadius, enemySpawnRadius),
+                1f,
+                Random.Range(-enemySpawnRadius, enemySpawnRadius)
+            );
+        }
+
+        private static void _SpawnEnemy(GameObject enemyPrefabToSpawn, Vector3 spawnPosition)
+        {
+            GameObject instance = Instantiate(enemyPrefabToSpawn, spawnPosition, Quaternion.identity);
+            NetworkObject instanceNetworkObject = instance.GetComponent<NetworkObject>();
+            instanceNetworkObject.Spawn();
+        }
     }
 }
