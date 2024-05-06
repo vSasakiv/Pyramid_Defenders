@@ -4,6 +4,7 @@ using Interfaces;
 using ScriptableObjects;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace Enemies
 {
@@ -12,6 +13,7 @@ namespace Enemies
         [SerializeField] private EnemyScriptableObject enemyStats;
         
         private IEnemyStrategy _enemyStrategy;
+        private NavMeshAgent _agent;
         private float _currentHealth;
 
         public float GetHealth()
@@ -27,6 +29,13 @@ namespace Enemies
 
         public void Awake()
         {
+            _agent = gameObject.AddComponent<NavMeshAgent>();
+
+            _agent.height = enemyStats.height;
+            _agent.radius = enemyStats.radius;
+            _agent.speed = enemyStats.speed;
+            _agent.acceleration = enemyStats.acceleration;
+            
             switch (enemyStats.strategy)
             {
                 case Strategy.Wandering:

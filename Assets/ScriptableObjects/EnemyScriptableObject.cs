@@ -20,11 +20,19 @@ namespace ScriptableObjects
     [CreateAssetMenu(fileName = "Enemy", menuName = "Enemy", order = 0)]
     public class EnemyScriptableObject : ScriptableObject
     {
+        // Basic attributes, health, strategy and difficulty
         public int baseHealth;
-        public float moveSpeed;
-        public float jumpPower;
-        public float fallSpeed;
         public Strategy strategy;
         public Difficulty difficulty;
+
+        // Physical attributes
+        public float height;
+        public float radius;
+        public float speed;
+        public float acceleration;
+        
+        public float jumpPower;
+        public float fallSpeed;
+        
     }
 }
